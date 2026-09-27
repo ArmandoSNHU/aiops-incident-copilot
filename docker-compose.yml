@@ -1,0 +1,24 @@
+# Bring up the triage API and a Prometheus that scrapes its /metrics endpoint.
+#   docker compose up --build
+#   API  -> http://localhost:8000/docs
+#   Prom -> http://localhost:9090
+services:
+  aiops:
+    build: .
+    image: aiops-incident-copilot:local
+    ports:
+      - "8000:8000"
+    environment:
+      AIOPS_MODE: offline        # set to "ollama" and point at a reachable Ollama to synthesize summaries
+      LOG_LEVEL: INFO
+    restart: unless-stopped
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deploy/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    depends_on:
+      - aiops
+    restart: unless-stopped

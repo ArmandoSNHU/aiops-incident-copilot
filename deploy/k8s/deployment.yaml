@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aiops-incident-copilot
+  labels:
+    app: aiops
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: aiops
+  template:
+    metadata:
+      labels:
+        app: aiops
+      annotations:
+        # Lets a Prometheus with pod-annotation discovery scrape this pod.
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+        - name: aiops
+          image: aiops-incident-copilot:local
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: aiops-config
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20

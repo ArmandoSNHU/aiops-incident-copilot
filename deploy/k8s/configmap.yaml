@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aiops-config
+data:
+  AIOPS_MODE: "offline"   # "ollama" to synthesize summaries against a reachable Ollama service
+  LOG_LEVEL: "INFO"

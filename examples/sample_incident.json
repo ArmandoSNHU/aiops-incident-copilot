@@ -1,0 +1,11 @@
+{
+  "id": "INC-2043",
+  "title": "Checkout API returning 503s",
+  "signals": [
+    {"source": "api-gateway", "kind": "log", "severity": "critical", "message": "502 Bad Gateway from upstream checkout-svc"},
+    {"source": "checkout-svc", "kind": "log", "severity": "critical", "message": "TimeoutError: timeout acquiring connection from pool"},
+    {"source": "postgres", "kind": "metric", "metric": "db_connections_active", "value": 98.0, "severity": "warning"},
+    {"source": "checkout-svc", "kind": "metric", "metric": "p99_latency_ms", "value": 2400.0, "severity": "warning"},
+    {"source": "checkout-svc", "kind": "metric", "metric": "error_rate", "value": 0.31, "severity": "critical"}
+  ]
+}
